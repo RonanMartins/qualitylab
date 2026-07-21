@@ -1,0 +1,8 @@
+%% Visão de alto nível dos componentes principais do QualityLab.
+%% Redis é uma capacidade futura e não integra o fluxo atual.
+flowchart LR
+    User[Usuário] --> Frontend[React + Vite]
+    Frontend --> API[NestJS API]
+    API --> Database[(PostgreSQL)]
+    Database --- PgAdmin[pgAdmin]
+    API -.-> Redis[Redis (Future)]
