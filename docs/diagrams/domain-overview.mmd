@@ -1,0 +1,8 @@
+%% Visão simplificada do fluxo principal do domínio OMS do QualityLab.
+flowchart LR
+    User[User] --> Customer[Customer]
+    Customer --> Order[Order]
+    Order --> OrderItem[OrderItem]
+    OrderItem --> Product[Product]
+    Product --> Inventory[Inventory]
+    Inventory --> Dashboard[Dashboard]

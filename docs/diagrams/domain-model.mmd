@@ -1,0 +1,9 @@
+%% Relacionamentos principais do domínio OMS do QualityLab.
+%% Dashboard não é uma entidade e, por isso, não está representado.
+erDiagram
+    Customer ||--o{ Order : places
+    Order ||--|{ OrderItem : contains
+    Product ||--o{ OrderItem : appears_in
+    Category ||--o{ Product : classifies
+    Product ||--|| Inventory : has
+    Inventory ||--o{ InventoryMovement : records
