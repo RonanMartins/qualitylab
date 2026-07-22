@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -10,4 +5,161 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum CustomerStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  CANCELLED
+  SHIPPED
+}
+
+enum InventoryMovementType {
+  IN
+  OUT
+  ADJUSTMENT
+}
+
+// Segurança
+model Role {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users User[] @relation("RoleUsers")
+}
+
+model User {
+  id           String     @id @default(uuid())
+  name         String
+  email        String     @unique
+  passwordHash String
+  status       UserStatus @default(ACTIVE)
+  roleId       String
+  lastLoginAt  DateTime?
+  deletedAt    DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  role          Role    @relation("RoleUsers", fields: [roleId], references: [id])
+  createdOrders Order[] @relation("OrderCreatedBy")
+}
+
+// Catálogo
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products Product[] @relation("CategoryProducts")
+}
+
+model Product {
+  id          String        @id @default(uuid())
+  sku         String        @unique
+  name        String
+  description String?       @db.VarChar(200)
+  imageUrl    String?
+  ncm         String        @db.Char(8)
+  price       Decimal       @db.Decimal(10, 2)
+  categoryId  String?
+  status      ProductStatus @default(ACTIVE)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  category   Category?   @relation("CategoryProducts", fields: [categoryId], references: [id])
+  inventory  Inventory?  @relation("ProductInventory")
+  orderItems OrderItem[] @relation("ProductOrderItems")
+}
+
+// Clientes
+model Customer {
+  id         String         @id @default(uuid())
+  name       String
+  email      String         @unique
+  phone      String         @unique
+  zipCode    String
+  street     String
+  number     String
+  complement String?
+  district   String
+  city       String
+  state      String
+  status     CustomerStatus @default(ACTIVE)
+  deletedAt  DateTime?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  orders Order[] @relation("CustomerOrders")
+}
+
+// Estoque
+model Inventory {
+  id        String   @id @default(uuid())
+  productId String   @unique
+  quantity  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product   Product             @relation("ProductInventory", fields: [productId], references: [id])
+  movements InventoryMovement[] @relation("InventoryMovements")
+}
+
+model InventoryMovement {
+  id          String                @id @default(uuid())
+  inventoryId String
+  type        InventoryMovementType
+  quantity    Int
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  inventory Inventory @relation("InventoryMovements", fields: [inventoryId], references: [id])
+}
+
+// Pedidos
+model Order {
+  id          String      @id @default(uuid())
+  customerId  String
+  subtotal    Decimal     @db.Decimal(10, 2)
+  discount    Decimal     @db.Decimal(10, 2)
+  total       Decimal     @db.Decimal(10, 2)
+  status      OrderStatus @default(PENDING)
+  createdById String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  customer  Customer    @relation("CustomerOrders", fields: [customerId], references: [id])
+  createdBy User        @relation("OrderCreatedBy", fields: [createdById], references: [id])
+  items     OrderItem[] @relation("OrderItems")
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int
+  unitPrice Decimal  @db.Decimal(10, 2)
+  total     Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order   Order   @relation("OrderItems", fields: [orderId], references: [id])
+  product Product @relation("ProductOrderItems", fields: [productId], references: [id])
 }
