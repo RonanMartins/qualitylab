@@ -50,7 +50,7 @@ A arquitetura inicia como um monólito modular, adequado ao escopo educacional e
 
 ## Diagrama
 
-O diagrama Mermaid de visão do sistema está disponível em [system-overview.mmd](diagrams/system-overview.mmd).
+O diagrama Mermaid de visão do sistema está disponível em [system-overview.mmd](system-overview.mmd).
 
 ## Histórico de alterações
 

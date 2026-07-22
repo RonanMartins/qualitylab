@@ -40,8 +40,23 @@ Ambiente de estudos de Engenharia de Qualidade baseado em um Order Management Sy
 
 O banco criado pelo ambiente é `qualitylab`.
 
-## Project Documentation
+## 📚 Engineering Practices
 
-- [`docs/`](docs/) concentra a documentação arquitetural e de domínio do projeto, incluindo seus diagramas.
-- [`QUALITY_GATE.md`](QUALITY_GATE.md) define o checklist oficial para aprovação das Sprints.
-- [`ROADMAP.md`](ROADMAP.md) registra a evolução do projeto e o planejamento das próximas Sprints.
+O QualityLab utiliza práticas de engenharia de software para garantir qualidade,
+padronização, previsibilidade e rastreabilidade durante todo o ciclo de desenvolvimento.
+
+### Governance
+
+- [Development Workflow](docs/governance/DEVELOPMENT_WORKFLOW.md)
+- [Quality Gate](docs/governance/QUALITY_GATE.md)
+- [Roadmap](docs/governance/ROADMAP.md)
+
+### Architecture
+
+- [Architecture Overview](docs/architecture/architecture-overview.md)
+- [ADR (Architecture Decision Records)](docs/architecture/ADR/)
+- [Domain Model](docs/architecture/domain/domain-model.md)
+
+### Technical Decisions
+
+- [Sprint Technical Decisions](docs/architecture/technical-decisions/technology-decisions.md)

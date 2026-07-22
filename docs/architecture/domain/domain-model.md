@@ -4,7 +4,7 @@
 
 Definir o modelo de domínio do QualityLab como um Order Management System (OMS) simplificado. Este documento é a referência para futuras entidades Prisma, módulos NestJS, APIs e casos de teste.
 
-O diagrama de visão geral está em `docs/diagrams/domain-overview.mmd`. O ER Diagram técnico oficial é mantido em `docs/diagrams/domain-model.mmd`.
+O diagrama de visão geral está em [domain-overview.mmd](domain-overview.mmd). O ER Diagram técnico oficial é mantido em [domain-model.mmd](domain-model.mmd).
 
 ## Entidades
 
@@ -12,7 +12,7 @@ O diagrama de visão geral está em `docs/diagrams/domain-overview.mmd`. O ER Di
 
 | Entidade | Atributos principais | Responsabilidade |
 | --- | --- | --- |
-| User | UUID, name, email, passwordHash, roleId, active | Representa um usuário autenticado no sistema. |
+| User | UUID, name, email, passwordHash, roleId, status | Representa um usuário autenticado no sistema. |
 | Role | UUID, name | Define o papel e as permissões atribuídas aos usuários. |
 
 ### Customer
@@ -72,6 +72,11 @@ O Dashboard não possui entidade própria. Ele consolida dados das entidades de 
 - Um `Product` pode constar em vários `OrderItem`; cada item referencia um produto.
 
 ## Estados (Enums)
+
+### UserStatus
+
+- `ACTIVE`
+- `INACTIVE`
 
 ### OrderStatus
 
