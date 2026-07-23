@@ -5,6 +5,8 @@ services:
     environment:
       DATABASE_URL: postgresql://qualitylab:qualitylab@postgres:5432/qualitylab?schema=public
       JWT_SECRET: change-me-for-local-development
+      JWT_ACCESS_TOKEN_EXPIRES_IN: 15m
+      JWT_REFRESH_TOKEN_EXPIRES_IN: 7d
       PORT: 3000
     ports:
       - "3000:3000"
