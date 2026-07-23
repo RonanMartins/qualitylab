@@ -12,3 +12,8 @@ export const AUTH_ENV_KEYS = {
   JWT_ACCESS_TOKEN_EXPIRES_IN: 'JWT_ACCESS_TOKEN_EXPIRES_IN',
   JWT_REFRESH_TOKEN_EXPIRES_IN: 'JWT_REFRESH_TOKEN_EXPIRES_IN',
 } as const;
+
+export const AUTH_ERROR_MESSAGES = {
+  INVALID_CREDENTIALS: 'Invalid credentials',
+  INVALID_REFRESH_TOKEN: 'Invalid refresh token',
+} as const;
