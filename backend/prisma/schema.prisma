@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
@@ -57,8 +58,22 @@ model User {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
-  role          Role    @relation("RoleUsers", fields: [roleId], references: [id])
-  createdOrders Order[] @relation("OrderCreatedBy")
+  role          Role          @relation("RoleUsers", fields: [roleId], references: [id])
+  createdOrders Order[]       @relation("OrderCreatedBy")
+  sessions      UserSession[] @relation("UserSessions")
+}
+
+model UserSession {
+  id               String   @id @default(uuid())
+  userId           String
+  refreshTokenHash String
+  expiresAt        DateTime
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user User @relation("UserSessions", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 // Catálogo
