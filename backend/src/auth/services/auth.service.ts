@@ -15,11 +15,14 @@ import { LoginDto } from '../dto/login.dto';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { RefreshTokenPayload } from '../interfaces/refresh-token-payload.interface';
+import { AuthenticationPolicy } from '../policies/authentication.policy';
 import { AuthTokens } from '../types/auth.types';
 import { PrismaService } from './prisma.service';
 
 @Injectable()
 export class AuthService {
+  private readonly authenticationPolicy = new AuthenticationPolicy();
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
@@ -32,6 +35,10 @@ export class AuthService {
     });
 
     if (!user) {
+      throw new UnauthorizedException(AUTH_ERROR_MESSAGES.INVALID_CREDENTIALS);
+    }
+
+    if (!this.authenticationPolicy.canAuthenticate(user)) {
       throw new UnauthorizedException(AUTH_ERROR_MESSAGES.INVALID_CREDENTIALS);
     }
 
@@ -99,22 +106,28 @@ export class AuthService {
       );
     }
 
+    const user = await this.prisma.user.findUnique({
+      where: { id: payload.userId },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException(
+        AUTH_ERROR_MESSAGES.INVALID_REFRESH_TOKEN,
+      );
+    }
+
+    if (!this.authenticationPolicy.canAuthenticate(user)) {
+      throw new UnauthorizedException(
+        AUTH_ERROR_MESSAGES.INVALID_REFRESH_TOKEN,
+      );
+    }
+
     const isRefreshTokenValid = await argon2.verify(
       session.refreshTokenHash,
       refreshTokenDto.refreshToken,
     );
 
     if (!isRefreshTokenValid) {
-      throw new UnauthorizedException(
-        AUTH_ERROR_MESSAGES.INVALID_REFRESH_TOKEN,
-      );
-    }
-
-    const user = await this.prisma.user.findUnique({
-      where: { id: payload.userId },
-    });
-
-    if (!user) {
       throw new UnauthorizedException(
         AUTH_ERROR_MESSAGES.INVALID_REFRESH_TOKEN,
       );
